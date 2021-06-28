@@ -5,6 +5,8 @@
 ## Demo
 See live demo on [Stackblitz](https://stackblitz.com/edit/axios-with-ratios).
 
+For more information about why we should cancel a request before component unmounts, please see [this article](https://dev.to/abemscac/ratios-yet-another-react-hook-library-for-axios-but-this-one-handles-cancel-token-for-you-2p7f).
+
 ## Basic usage
 
 ### 1. First, manage your axios requests in a proper way
@@ -62,7 +64,6 @@ export default MyComponent;
 ```
 
 And that's it! The hook will cancel the request for you when the component unmounts.
-For more information about why we should cancel a request before component unmounts, please see [this article](https://abe-msc-ac.medium.com/ratios-yet-another-react-hook-library-for-axios-56caef80d1c4)
 
 ## Advanced usage
 
