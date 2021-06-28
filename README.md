@@ -1,6 +1,6 @@
 # Ratios
 
-## Yet another React hook library for axios. But this one handles cancel token for you!
+## A React hook library for managing axios requests, includes cancellation mechanism.
 
 ## Demo
 See live demo on [Stackblitz](https://stackblitz.com/edit/axios-with-ratios).
@@ -33,7 +33,7 @@ const UserAPI = {
 export default UserAPI;
 ```
 
-### 2. Import the "useAxiosRequest" hook from ratios, and use one of the axios requests we just created as argument
+### 2. Import the "useAxiosRequest" hook from Ratios, and use one of the axios requests we just created as argument
 
 ```javascript
 import React from "react";
