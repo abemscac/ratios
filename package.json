@@ -1,6 +1,6 @@
 {
   "name": "ratios",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "An easy-to-use React hook library to manage axios request, includes cancellation mechanism.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -19,7 +19,7 @@
     "react-axios"
   ],
   "author": "abemscac",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/abemscac/ratios/issues"
   },

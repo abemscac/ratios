@@ -28,8 +28,6 @@ const UserAPI = {
 export default UserAPI;
 ```
 
-Please stop writing raw URLs and methods everywhere in every component like so many other react-axios libraries said. It's giving me a headache.
-
 ### 2. Import the "useAxiosRequest" hook from ratios, and use one of the axios requests we just created as argument
 
 ```javascript
@@ -38,7 +36,9 @@ import { useAxiosRequest } from "ratios";
 import UserAPI from "../apis/user";
 
 const MyComponent = () => {
-  const getUsersRequest = useAxiosRequest(UserAPI.getAll);
+  const getUsersRequest = useAxiosRequest(UserAPI.getAll, {
+    immediate: true,
+  });
 
   return (
     <div>
@@ -59,7 +59,7 @@ export default MyComponent;
 ```
 
 And that's it! The hook will cancel the request for you when the component unmounts.
-For more information about why we should cancel a request before component unmounts, please see [this article](https://www.google.com)
+For more information about why we should cancel a request before component unmounts, please see [this article](https://abe-msc-ac.medium.com/ratios-yet-another-react-hook-library-for-axios-56caef80d1c4)
 
 ## Advanced usage
 

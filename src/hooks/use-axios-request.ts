@@ -33,8 +33,6 @@ const useAxiosRequest = <T = any>(
   });
 
   const executeRequest = async (): Promise<T | undefined> => {
-    if (state.isLoading) return;
-
     try {
       setState((prev) => ({
         isLoading: true,
@@ -66,9 +64,14 @@ const useAxiosRequest = <T = any>(
     immediate && executeRequest();
   }, []);
 
+  const execute = async () => {
+    if (state.isLoading) return;
+    return await executeRequest();
+  };
+
   return {
     ...state,
-    execute: executeRequest,
+    execute,
   };
 };
 
