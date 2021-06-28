@@ -2,6 +2,9 @@
 
 ## Yet another React hook library for axios. But this one handles cancel token for you!
 
+## Demo
+See live demo on [Stackblitz](https://stackblitz.com/edit/axios-with-ratios).
+
 ## Basic usage
 
 ### 1. First, manage your axios requests in a proper way
