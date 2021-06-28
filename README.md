@@ -165,13 +165,13 @@ The request will be cancelled automatically when component unmounts.
 
 ### 2. Options for useAxiosRequest()
 
-| key              | Type                  | Required | Default Value | Description                                                                  |
-| ---------------- | --------------------- | -------- | ------------- | ---------------------------------------------------------------------------- |
-| defaultIsLoading | `boolean`             | `false`  | `true`        | The default value of request.isLoading.                                      |
-| defaultData      | `any`                 | `false`  | `undefined`   | The default value of request.data.                                           |
-| immediate        | `boolean`             | `false`  | `false`       | If the request should be execute imeediately after the component is mounted. |
-| onError          | `(error: any) => any` | `false`  | `undefined`   | Function to execute when an error occurred during API execution.             |
-| onCancelled      | `(error: any) => any` | `false`  | `undefined`   | Function to execute when the request is cancelled.                           |
+| key              | Type                  | Required | Default Value | Description                                                                   |
+| ---------------- | --------------------- | -------- | ------------- | ----------------------------------------------------------------------------- |
+| defaultIsLoading | `boolean`             | `false`  | `true`        | The default value of request.isLoading.                                       |
+| defaultData      | `any`                 | `false`  | `undefined`   | The default value of request.data.                                            |
+| immediate        | `boolean`             | `false`  | `false`       | If the request should be executed immediately after the component is mounted. |
+| onError          | `(error: any) => any` | `false`  | `undefined`   | Function to execute when an error occurred during API execution.              |
+| onCancelled      | `(error: any) => any` | `false`  | `undefined`   | Function to execute when the request is cancelled.                            |
 
 ### 3. Properties for useCancelTokenSource()
 

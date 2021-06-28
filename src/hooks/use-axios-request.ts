@@ -5,6 +5,10 @@ import useCancelTokenSource from "./use-cancel-token-source";
 interface useAxiosRequestOptions<T> {
   defaultIsLoading?: boolean;
   defaultData?: T;
+  /**
+   * If the request should be executed immediately after the component is mounted.
+   * @default false
+   */
   immediate?: boolean;
   onError?: (error: any) => any;
   onCancelled?: (error: any) => any;
