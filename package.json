@@ -1,6 +1,6 @@
 {
   "name": "ratios",
-  "version": "1.0.5",
+  "version": "1.0.7",
   "description": "An easy-to-use React hook library to manage axios request, includes cancellation mechanism.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

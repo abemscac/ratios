@@ -2,15 +2,16 @@
 
 ## A React hook library for managing axios requests, includes cancellation mechanism.
 
+## Installation
+
+- If you're using yarn: `yarn add ratios`
+- If you're using npm: `npm install ratios`
+
 ## Demo
+
 See live demo on [Stackblitz](https://stackblitz.com/edit/axios-with-ratios).
 
 For more information about why we should cancel a request before component unmounts, please see [this article](https://dev.to/abemscac/ratios-yet-another-react-hook-library-for-axios-but-this-one-handles-cancel-token-for-you-2p7f).
-
-## Installation
-
-- If you're using yarn: ```yarn add ratios```
-- If you're using npm: ```npm install ratios```
 
 ## Basic usage
 
