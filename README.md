@@ -5,7 +5,7 @@
 ## Installation
 
 - If you're using yarn: `yarn add ratios`
-- If you're using npm: `npm install ratios`
+- If you're using npm: `npm install ratios --save`
 
 ## Demo
 
