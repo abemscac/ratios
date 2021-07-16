@@ -165,12 +165,13 @@ The request will be cancelled automatically when component unmounts.
 
 ### 1. Properties for useAxiosRequest()
 
-| key       | Type               | Description                                                                                                                                                                        |
-| --------- | ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| isLoading | `boolean`          | If the request is still going on.                                                                                                                                                  |
-| data      | `<T = any>`        | The data property returned from axios response.                                                                                                                                    |
-| execute   | `() => Promise<T>` | Execute the request manually. If the `isLoading` property is still `true`, then it will **NOT** execute the request. Will return the data property from axios response if success. |
-| executed  | `boolean`          | If the request has been executed.                                                                                                                                                  |
+| key       | Type                             | Description                                                                                                                                                                        |
+| --------- | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| isLoading | `boolean`                        | If the request is still going on.                                                                                                                                                  |
+| data      | `<T = any>`                      | The data property returned from axios response.                                                                                                                                    |
+| setData   | `(callback: (prevData: T) => T)` | The function to update data.                                                                                                                                                       |
+| executed  | `boolean`                        | If the request has been executed.                                                                                                                                                  |
+| execute   | `() => Promise<T>`               | Execute the request manually. If the `isLoading` property is still `true`, then it will **NOT** execute the request. Will return the data property from axios response if success. |
 
 ### 2. Options for useAxiosRequest()
 

@@ -71,6 +71,13 @@ const useAxiosRequest = <T = any>(
     immediate && executeRequest();
   }, []);
 
+  const setData = (callback: (prevData: T | undefined) => T | undefined) => {
+    setState((prev) => ({
+      ...prev,
+      data: callback(prev.data),
+    }));
+  };
+
   const execute = async () => {
     if (state.isLoading) return;
     return await executeRequest();
@@ -78,6 +85,7 @@ const useAxiosRequest = <T = any>(
 
   return {
     ...state,
+    setData,
     execute,
   };
 };
