@@ -26,7 +26,7 @@ const useAxiosRequest = <T = any>(
     Object.assign(
       {
         defaultIsLoading: true,
-        immediate: false,
+        immediate: true,
       },
       options
     );
@@ -34,6 +34,7 @@ const useAxiosRequest = <T = any>(
   const [state, setState] = useState({
     isLoading: defaultIsLoading,
     data: defaultData,
+    executed: false,
   });
 
   const executeRequest = async (): Promise<T | undefined> => {
@@ -41,6 +42,7 @@ const useAxiosRequest = <T = any>(
       setState((prev) => ({
         isLoading: true,
         data: prev.data,
+        executed: prev.executed,
       }));
 
       const { data } = await requestCallback({
@@ -50,6 +52,7 @@ const useAxiosRequest = <T = any>(
       setState({
         isLoading: false,
         data,
+        executed: true,
       });
 
       return data;

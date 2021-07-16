@@ -47,9 +47,7 @@ import { useAxiosRequest } from "ratios";
 import UserAPI from "../apis/user";
 
 const MyComponent = () => {
-  const getUsersRequest = useAxiosRequest(UserAPI.getAll, {
-    immediate: true,
-  });
+  const getUsersRequest = useAxiosRequest(UserAPI.getAll);
 
   return (
     <div>
@@ -172,6 +170,7 @@ The request will be cancelled automatically when component unmounts.
 | isLoading | `boolean`          | If the request is still going on.                                                                                                                                                  |
 | data      | `<T = any>`        | The data property returned from axios response.                                                                                                                                    |
 | execute   | `() => Promise<T>` | Execute the request manually. If the `isLoading` property is still `true`, then it will **NOT** execute the request. Will return the data property from axios response if success. |
+| executed  | `boolean`          | If the request has been executed.                                                                                                                                                  |
 
 ### 2. Options for useAxiosRequest()
 
@@ -179,7 +178,7 @@ The request will be cancelled automatically when component unmounts.
 | ---------------- | --------------------- | -------- | ------------- | ----------------------------------------------------------------------------- |
 | defaultIsLoading | `boolean`             | `false`  | `true`        | The default value of request.isLoading.                                       |
 | defaultData      | `any`                 | `false`  | `undefined`   | The default value of request.data.                                            |
-| immediate        | `boolean`             | `false`  | `false`       | If the request should be executed immediately after the component is mounted. |
+| immediate        | `boolean`             | `false`  | `true`        | If the request should be executed immediately after the component is mounted. |
 | onError          | `(error: any) => any` | `false`  | `undefined`   | Function to execute when an error occurred during API execution.              |
 | onCancelled      | `(error: any) => any` | `false`  | `undefined`   | Function to execute when the request is cancelled.                            |
 
