@@ -31,9 +31,9 @@ const instance = axios.create({
 
 const UserAPI = {
   getAll: (config) => instance.get("", config),
-  create: (data, config) => instance.post("", data, config),
-  updateById: (id, data, config) => instance.put(`/${id}`, data, config),
-  deleteById: (id, config) => instance.delete(`/${id}`, config),
+  create: (data) => (config) => instance.post("", data, config),
+  updateById: (id, data) => (config) => instance.put(`/${id}`, data, config),
+  deleteById: (id) => (config) => instance.delete(`/${id}`, config),
 };
 
 export default UserAPI;
@@ -108,14 +108,11 @@ const MyComponent = () => {
     age: 10,
   });
 
-  const createUserRequest = useAxiosRequest(
-    (cancelTokenConfig) => UserAPI.create(form, cancelTokenConfig),
-    {
-      defaultIsLoading: false,
-      immediate: false,
-      onError: handleError,
-    }
-  );
+  const createUserRequest = useAxiosRequest(UserAPI.create(form), {
+    defaultIsLoading: false,
+    immediate: false,
+    onError: handleError,
+  });
 
   const handleSubmitClick = async () => {
     const createdUser = await createUserRequest.execute();
@@ -180,6 +177,7 @@ The request will be cancelled automatically when component unmounts.
 | defaultIsLoading | `boolean`             | `false`  | `true`        | The default value of request.isLoading.                                       |
 | defaultData      | `any`                 | `false`  | `undefined`   | The default value of request.data.                                            |
 | immediate        | `boolean`             | `false`  | `true`        | If the request should be executed immediately after the component is mounted. |
+| onSuccess        | `(data: T) => any`    | `false`  | `undefined`   | Function to execute when API is successfully executed.                        |
 | onError          | `(error: any) => any` | `false`  | `undefined`   | Function to execute when an error occurred during API execution.              |
 | onCancelled      | `(error: any) => any` | `false`  | `undefined`   | Function to execute when the request is cancelled.                            |
 

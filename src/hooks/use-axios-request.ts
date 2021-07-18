@@ -10,6 +10,7 @@ interface useAxiosRequestOptions<T> {
    * @default false
    */
   immediate?: boolean;
+  onSuccess?: (data: T) => any;
   onError?: (error: any) => any;
   onCancelled?: (error: any) => any;
 }
@@ -22,14 +23,20 @@ const useAxiosRequest = <T = any>(
 ) => {
   const cancelTokenSource = useCancelTokenSource();
 
-  const { defaultIsLoading, defaultData, immediate, onError, onCancelled } =
-    Object.assign(
-      {
-        defaultIsLoading: true,
-        immediate: true,
-      },
-      options
-    );
+  const {
+    defaultIsLoading,
+    defaultData,
+    immediate,
+    onSuccess,
+    onError,
+    onCancelled,
+  } = Object.assign(
+    {
+      defaultIsLoading: true,
+      immediate: true,
+    },
+    options
+  );
 
   const [state, setState] = useState({
     isLoading: defaultIsLoading,
@@ -54,6 +61,8 @@ const useAxiosRequest = <T = any>(
         data,
         executed: true,
       });
+
+      onSuccess && onSuccess(data);
 
       return data;
     } catch (error) {
