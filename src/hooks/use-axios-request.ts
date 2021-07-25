@@ -13,7 +13,7 @@ interface useAxiosRequestOptions<T> {
   defaultData?: T;
   /**
    * If the request should be executed immediately after the component is mounted.
-   * @default false
+   * @true false
    */
   immediate?: boolean;
   onSuccess?: (data: T) => any;
