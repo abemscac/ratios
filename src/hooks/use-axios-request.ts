@@ -3,7 +3,13 @@ import { AxiosResponse, AxiosRequestConfig } from "axios";
 import useCancelTokenSource from "./use-cancel-token-source";
 
 interface useAxiosRequestOptions<T> {
+  /**
+   * @default true
+   */
   defaultIsLoading?: boolean;
+  /**
+   * @default undefined
+   */
   defaultData?: T;
   /**
    * If the request should be executed immediately after the component is mounted.
@@ -44,7 +50,7 @@ const useAxiosRequest = <T = any>(
     executed: false,
   });
 
-  const executeRequest = async (): Promise<T | undefined> => {
+  const execute = async (): Promise<T | undefined> => {
     try {
       setState((prev) => ({
         isLoading: true,
@@ -77,7 +83,7 @@ const useAxiosRequest = <T = any>(
   };
 
   useEffect(() => {
-    immediate && executeRequest();
+    immediate && execute();
   }, []);
 
   const setData = (callback: (prevData: T | undefined) => T | undefined) => {
@@ -85,11 +91,6 @@ const useAxiosRequest = <T = any>(
       ...prev,
       data: callback(prev.data),
     }));
-  };
-
-  const execute = async () => {
-    if (state.isLoading) return;
-    return await executeRequest();
   };
 
   return {
