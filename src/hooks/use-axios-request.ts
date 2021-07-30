@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { AxiosResponse, AxiosRequestConfig } from "axios";
 import useCancelTokenSource from "./use-cancel-token-source";
 
-interface useAxiosRequestOptions<T> {
+export interface useAxiosRequestOptions<T> {
   /**
    * @default true
    */
@@ -24,7 +24,7 @@ interface useAxiosRequestOptions<T> {
 const useAxiosRequest = <T = any>(
   requestCallback: (
     cancelTokenConfig: AxiosRequestConfig
-  ) => Promise<AxiosResponse>,
+  ) => Promise<AxiosResponse<T>>,
   options: useAxiosRequestOptions<T> = {}
 ) => {
   const cancelTokenSource = useCancelTokenSource();
