@@ -16,6 +16,11 @@ export interface useAxiosRequestOptions<T> {
    * @default true
    */
   immediate?: boolean;
+  /**
+   * If the previous request should be cancelled before executing a new one.
+   * @default true
+   */
+  cancelPrevious?: boolean;
   onSuccess?: (data: T) => any;
   onError?: (error: any) => any;
   onCancelled?: (error: any) => any;
@@ -27,12 +32,11 @@ const useAxiosRequest = <T = any>(
   ) => Promise<AxiosResponse<T>>,
   options: useAxiosRequestOptions<T> = {}
 ) => {
-  const cancelTokenSource = useCancelTokenSource();
-
   const {
     defaultIsLoading,
     defaultData,
     immediate,
+    cancelPrevious,
     onSuccess,
     onError,
     onCancelled,
@@ -40,6 +44,7 @@ const useAxiosRequest = <T = any>(
     {
       defaultIsLoading: true,
       immediate: true,
+      cancelPrevious: true,
     },
     options
   );
@@ -50,7 +55,13 @@ const useAxiosRequest = <T = any>(
     executed: false,
   });
 
+  const { token, cancel, isCancelError } = useCancelTokenSource({
+    repeatable: cancelPrevious,
+  });
+
   const execute = async (): Promise<T | undefined> => {
+    const cancelToken = cancelPrevious ? cancel() : token;
+
     try {
       setState((prev) => ({
         isLoading: true,
@@ -58,9 +69,7 @@ const useAxiosRequest = <T = any>(
         executed: prev.executed,
       }));
 
-      const { data } = await requestCallback({
-        cancelToken: cancelTokenSource.token,
-      });
+      const { data } = await requestCallback({ cancelToken });
 
       setState({
         isLoading: false,
@@ -72,7 +81,7 @@ const useAxiosRequest = <T = any>(
 
       return data;
     } catch (error) {
-      if (cancelTokenSource.isCancelError(error)) {
+      if (isCancelError(error)) {
         onCancelled && onCancelled(error);
       } else if (onError) {
         onError(error);
