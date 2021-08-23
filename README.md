@@ -184,11 +184,11 @@ The request will be cancelled automatically when component unmounts.
 
 ### 3. Properties for useCancelTokenSource()
 
-| key           | Type                      | Description                                                                                                     |
-| ------------- | ------------------------- | --------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
-| token         | `CancelToken`             | The cancel token.                                                                                               |
-| cancel        | `() => CancelToken        | undefined`                                                                                                      | Return next token if repeatable is true, else return undefined. |
-| isCancelError | `(value: any) => boolean` | Use this method to check if an error is thrown due to cancellation. **This method equals to `axios.isCancel`.** |
+| key           | Type                             | Description                                                                                                     |
+| ------------- | -------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| token         | `CancelToken`                    | The cancel token.                                                                                               |
+| cancel        | `() => CancelToken | undefined` | Return next token if repeatable is true, else return undefined.                                                 |
+| isCancelError | `(value: any) => boolean`        | Use this method to check if an error is thrown due to cancellation. **This method equals to `axios.isCancel`.** |
 
 ### 4. Options for useCancelTokenSource()
 
