@@ -14,12 +14,8 @@ const useCancelTokenSource = (props: Props = {}) => {
 
   const { repeatable } = Object.assign({ repeatable: true }, props);
 
-  useEffect(() => {
-    return () => ref?.current?.cancel();
-  }, []);
-
   /**
-   * Return next token if repeatable is true, else return undefined.
+   * Return a new token if repeatable is true, else return undefined.
    */
   const cancel = () => {
     if (!ref?.current) {
@@ -28,13 +24,17 @@ const useCancelTokenSource = (props: Props = {}) => {
 
     ref.current.cancel();
 
-    if (repeatable) {
-      ref.current = axios.CancelToken.source();
-      return ref.current.token;
-    } else {
+    if (!repeatable) {
       return undefined;
     }
+
+    ref.current = axios.CancelToken.source();
+    return ref.current.token;
   };
+
+  useEffect(() => {
+    return () => ref?.current?.cancel();
+  }, []);
 
   return {
     token: ref?.current?.token,

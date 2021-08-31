@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { AxiosResponse, AxiosRequestConfig } from "axios";
 import useCancelTokenSource from "./use-cancel-token-source";
 
-export interface useAxiosRequestOptions<T> {
+export interface useAxiosRequestOptions<TResponse, TData> {
   /**
    * @default true
    */
@@ -10,7 +10,7 @@ export interface useAxiosRequestOptions<T> {
   /**
    * @default undefined
    */
-  defaultData?: T;
+  defaultData?: TData;
   /**
    * If the request should be executed immediately after the component is mounted.
    * @default true
@@ -21,22 +21,24 @@ export interface useAxiosRequestOptions<T> {
    * @default true
    */
   cancelPrevious?: boolean;
-  onSuccess?: (data: T) => any;
-  onError?: (error: any) => any;
-  onCancelled?: (error: any) => any;
+  middleware?: (response: AxiosResponse<TResponse>, prevData?: TData) => TData;
+  onSuccess?: () => void;
+  onError?: (error: any) => void;
+  onCancelled?: (error: any) => void;
 }
 
-const useAxiosRequest = <T = any>(
+const useAxiosRequest = <TResponse = any, TData = TResponse>(
   requestCallback: (
     cancelTokenConfig: AxiosRequestConfig
-  ) => Promise<AxiosResponse<T>>,
-  options: useAxiosRequestOptions<T> = {}
+  ) => Promise<AxiosResponse<TResponse>>,
+  options: useAxiosRequestOptions<TResponse, TData> = {}
 ) => {
   const {
     defaultIsLoading,
     defaultData,
     immediate,
     cancelPrevious,
+    middleware,
     onSuccess,
     onError,
     onCancelled,
@@ -59,7 +61,7 @@ const useAxiosRequest = <T = any>(
     repeatable: cancelPrevious,
   });
 
-  const execute = async (): Promise<T | undefined> => {
+  const execute = async () => {
     const cancelToken = cancelPrevious ? cancel() : token;
 
     try {
@@ -69,17 +71,20 @@ const useAxiosRequest = <T = any>(
         executed: prev.executed,
       }));
 
-      const { data } = await requestCallback({ cancelToken });
+      const response = await requestCallback({ cancelToken });
 
-      setState({
-        isLoading: false,
-        data,
-        executed: true,
+      setState((prev) => {
+        const nextData = middleware
+          ? middleware(response, prev.data)
+          : (response.data as unknown as TData);
+        return {
+          isLoading: false,
+          data: nextData,
+          executed: true,
+        };
       });
 
-      onSuccess && onSuccess(data);
-
-      return data;
+      onSuccess && onSuccess();
     } catch (error) {
       if (isCancelError(error)) {
         onCancelled && onCancelled(error);
@@ -95,16 +100,8 @@ const useAxiosRequest = <T = any>(
     immediate && execute();
   }, []);
 
-  const setData = (callback: (prevData: T | undefined) => T | undefined) => {
-    setState((prev) => ({
-      ...prev,
-      data: callback(prev.data),
-    }));
-  };
-
   return {
     ...state,
-    setData,
     execute,
   };
 };
