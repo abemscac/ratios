@@ -1,21 +1,21 @@
 import { useEffect, useRef } from "react";
 import axios from "axios";
 
-interface Props {
+export interface UseCancelTokenSourceOptions {
   /**
-   * If the token can be used multiple times.
-   * @default true
+   * If the token can only be used once.
+   * @default false
    */
-  repeatable?: boolean;
+  once?: boolean;
 }
 
-const useCancelTokenSource = (props: Props = {}) => {
+const useCancelTokenSource = (props: UseCancelTokenSourceOptions = {}) => {
   const ref = useRef(axios.CancelToken.source());
 
-  const { repeatable } = Object.assign({ repeatable: true }, props);
+  const { once } = Object.assign({ once: false }, props);
 
   /**
-   * Return a new token if repeatable is true, else return undefined.
+   * Return a new token if "once" option is false, else return undefined.
    */
   const cancel = () => {
     if (!ref?.current) {
@@ -24,12 +24,12 @@ const useCancelTokenSource = (props: Props = {}) => {
 
     ref.current.cancel();
 
-    if (!repeatable) {
-      return undefined;
+    if (!once) {
+      ref.current = axios.CancelToken.source();
+      return ref.current.token;
     }
 
-    ref.current = axios.CancelToken.source();
-    return ref.current.token;
+    return undefined;
   };
 
   useEffect(() => {

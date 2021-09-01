@@ -2,17 +2,13 @@ import { useState, useEffect } from "react";
 import { AxiosResponse, AxiosRequestConfig } from "axios";
 import useCancelTokenSource from "./use-cancel-token-source";
 
-export interface useAxiosRequestOptions<TResponse, TData> {
+export interface UseAxiosRequestOptions<T> {
   /**
-   * @default true
+   * @default false
    */
-  defaultIsLoading?: boolean;
+  defaultIsExecuting?: boolean;
   /**
-   * @default undefined
-   */
-  defaultData?: TData;
-  /**
-   * If the request should be executed immediately after the component is mounted.
+   * If the request should be executed immediately.
    * @default true
    */
   immediate?: boolean;
@@ -21,30 +17,27 @@ export interface useAxiosRequestOptions<TResponse, TData> {
    * @default true
    */
   cancelPrevious?: boolean;
-  middleware?: (response: AxiosResponse<TResponse>, prevData?: TData) => TData;
-  onSuccess?: () => void;
+  onSuccess?: (response: AxiosResponse<T>) => void;
   onError?: (error: any) => void;
   onCancelled?: (error: any) => void;
 }
 
-const useAxiosRequest = <TResponse = any, TData = TResponse>(
+const useAxiosRequest = <T = any>(
   requestCallback: (
     cancelTokenConfig: AxiosRequestConfig
-  ) => Promise<AxiosResponse<TResponse>>,
-  options: useAxiosRequestOptions<TResponse, TData> = {}
+  ) => Promise<AxiosResponse<T>>,
+  options: UseAxiosRequestOptions<T> = {}
 ) => {
   const {
-    defaultIsLoading,
-    defaultData,
+    defaultIsExecuting,
     immediate,
     cancelPrevious,
-    middleware,
     onSuccess,
     onError,
     onCancelled,
   } = Object.assign(
     {
-      defaultIsLoading: true,
+      defaultIsExecuting: false,
       immediate: true,
       cancelPrevious: true,
     },
@@ -52,44 +45,46 @@ const useAxiosRequest = <TResponse = any, TData = TResponse>(
   );
 
   const [state, setState] = useState({
-    isLoading: defaultIsLoading,
-    data: defaultData,
-    executed: false,
+    /**
+     * If the request is still begin executed.
+     */
+    isExecuting: immediate ? true : defaultIsExecuting,
+    /**
+     * How many times has the request been successfully executed.
+     */
+    successCounter: 0,
   });
 
-  const { token, cancel, isCancelError } = useCancelTokenSource({
-    repeatable: cancelPrevious,
-  });
+  const { cancel, isCancelError } = useCancelTokenSource();
 
   const execute = async () => {
-    const cancelToken = cancelPrevious ? cancel() : token;
+    const cancelToken = cancelPrevious ? cancel() : undefined;
 
     try {
-      setState((prev) => ({
-        isLoading: true,
-        data: prev.data,
-        executed: prev.executed,
-      }));
+      if (!state.isExecuting) {
+        setState((prev) => ({
+          isExecuting: true,
+          successCounter: prev.successCounter,
+        }));
+      }
 
       const response = await requestCallback({ cancelToken });
 
-      setState((prev) => {
-        const nextData = middleware
-          ? middleware(response, prev.data)
-          : (response.data as unknown as TData);
-        return {
-          isLoading: false,
-          data: nextData,
-          executed: true,
-        };
-      });
+      setState((prev) => ({
+        isExecuting: false,
+        successCounter: prev.successCounter + 1,
+      }));
 
-      onSuccess && onSuccess();
+      onSuccess && onSuccess(response);
+
+      return response;
     } catch (error) {
       if (isCancelError(error)) {
         onCancelled && onCancelled(error);
+        return undefined;
       } else if (onError) {
         onError(error);
+        return undefined;
       } else {
         throw error;
       }
