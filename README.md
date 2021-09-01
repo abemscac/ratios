@@ -11,7 +11,11 @@
 
 See live demo on [Stackblitz](https://stackblitz.com/edit/axios-with-ratios).
 
-For more information about why we should cancel a request before component unmounts, please see [this article](https://dev.to/abemscac/ratios-yet-another-react-hook-library-for-axios-but-this-one-handles-cancel-token-for-you-2p7f).
+## Important Notices
+
+For 2.x, the `useAxiosRequest` hook will no longer managing the data for you.
+It is now a hook that do exactly what this package is about -- to manage a request.
+**It's a breaking change**, so make sure you think it through before updating from 1.x to 2.x.
 
 ## Basic usage
 
@@ -19,10 +23,10 @@ For more information about why we should cancel a request before component unmou
 
 ```javascript
 // File: /src/apis/user.js
-import axios from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 
 const instance = axios.create({
-  baseURL: "/api/users",
+  baseURL: "/api",
   headers: {
     "Content-Type": "application/json",
   },
@@ -30,10 +34,8 @@ const instance = axios.create({
 });
 
 const UserAPI = {
-  getAll: (config) => instance.get("", config),
-  create: (data) => (config) => instance.post("", data, config),
-  updateById: (id, data) => (config) => instance.put(`/${id}`, data, config),
-  deleteById: (id) => (config) => instance.delete(`/${id}`, config),
+  getById: (id) => (config?: AxiosRequestConfig) =>
+    instance.get(`/users/${id}`, config),
 };
 
 export default UserAPI;
@@ -42,24 +44,28 @@ export default UserAPI;
 ### 2. Import the "useAxiosRequest" hook from Ratios, and use one of the axios requests we just created as argument
 
 ```javascript
-import React from "react";
+import React, { useEffect } from "react";
 import { useAxiosRequest } from "ratios";
 import UserAPI from "../apis/user";
 
 const MyComponent = () => {
-  const getUsersRequest = useAxiosRequest(UserAPI.getAll);
+  const [user, setUser] = useState(null);
+  const getUserByIdRequest = useAxiosRequest(UserAPI.getById(1));
+
+  const fetchUser = async () => {
+    const response = await getUserByIdRequest.execute();
+    if (response) {
+      setUser(response.data);
+    }
+  };
+
+  useEffect(() => {
+    fetchUser();
+  }, []);
 
   return (
     <div>
-      {getUsersRequest.isLoading ? (
-        "Loading..."
-      ) : (
-        <ol>
-          {getUsersRequest.data.map((user) => (
-            <li key={user.id}>{user.name}</li>
-          ))}
-        </ol>
-      )}
+      {getUserByIdRequest.isExecuting ? "Loading..." : JSON.stringify(user)}
     </div>
   );
 };
@@ -184,11 +190,11 @@ The request will be cancelled automatically when component unmounts.
 
 ### 3. Properties for useCancelTokenSource()
 
-| key           | Type                             | Description                                                                                                     |
-| ------------- | -------------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| token         | `CancelToken`                    | The cancel token.                                                                                               |
-| cancel        | `() => CancelToken | undefined` | Return next token if repeatable is true, else return undefined.                                                 |
-| isCancelError | `(value: any) => boolean`        | Use this method to check if an error is thrown due to cancellation. **This method equals to `axios.isCancel`.** |
+| key           | Type                      | Description                                                                                                     |
+| ------------- | ------------------------- | --------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| token         | `CancelToken`             | The cancel token.                                                                                               |
+| cancel        | `() => CancelToken        | undefined`                                                                                                      | Return next token if repeatable is true, else return undefined. |
+| isCancelError | `(value: any) => boolean` | Use this method to check if an error is thrown due to cancellation. **This method equals to `axios.isCancel`.** |
 
 ### 4. Options for useCancelTokenSource()
 
