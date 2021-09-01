@@ -17,7 +17,6 @@ export interface UseAxiosRequestOptions<T> {
    * @default true
    */
   cancelPrevious?: boolean;
-  onSuccess?: (response: AxiosResponse<T>) => void;
   onError?: (error: any) => void;
   onCancelled?: (error: any) => void;
 }
@@ -32,7 +31,6 @@ const useAxiosRequest = <T = any>(
     defaultIsExecuting,
     immediate,
     cancelPrevious,
-    onSuccess,
     onError,
     onCancelled,
   } = Object.assign(
@@ -74,8 +72,6 @@ const useAxiosRequest = <T = any>(
         isExecuting: false,
         successCounter: prev.successCounter + 1,
       }));
-
-      onSuccess && onSuccess(response);
 
       return response;
     } catch (error) {
